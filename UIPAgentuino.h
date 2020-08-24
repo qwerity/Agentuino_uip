@@ -36,16 +36,8 @@
 
 extern "C" {
     // callback function
-    typedef void (*onPduReceiveCallback)(void);
+    typedef void (*onPduReceiveCallback)();
 }
-
-//typedef long long int64_t;
-typedef unsigned long long uint64_t;
-//typedef long int32_t;
-//typedef unsigned long uint32_t;
-//typedef unsigned char uint8_t;
-//typedef short int16_t;
-//typedef unsigned short uint16_t;
 
 typedef union uint64_u {
     uint64_t uint64;
@@ -67,18 +59,13 @@ typedef union int16_u {
     byte data[2];
 };
 
-//typedef union uint16_u {
-//    uint16_t uint16;
-//    byte data[2];
-//};
-
 typedef enum ASN_BER_BASE_TYPES {
     //   ASN/BER base types
-    ASN_BER_BASE_UNIVERSAL      = 0x0,
+    ASN_BER_BASE_UNIVERSAL   = 0x0,
     ASN_BER_BASE_APPLICATION = 0x40,
-    ASN_BER_BASE_CONTEXT      = 0x80,
+    ASN_BER_BASE_CONTEXT     = 0x80,
     ASN_BER_BASE_PUBLIC      = 0xC0,
-    ASN_BER_BASE_PRIMITIVE      = 0x0,
+    ASN_BER_BASE_PRIMITIVE   = 0x0,
     ASN_BER_BASE_CONSTRUCTOR = 0x20
 };
 
@@ -88,7 +75,7 @@ typedef enum SNMP_PDU_TYPES {
     SNMP_PDU_GET_NEXT = ASN_BER_BASE_CONTEXT | ASN_BER_BASE_CONSTRUCTOR | 1,
     SNMP_PDU_RESPONSE = ASN_BER_BASE_CONTEXT | ASN_BER_BASE_CONSTRUCTOR | 2,
     SNMP_PDU_SET      = ASN_BER_BASE_CONTEXT | ASN_BER_BASE_CONSTRUCTOR | 3,
-    SNMP_PDU_TRAP      = ASN_BER_BASE_CONTEXT | ASN_BER_BASE_CONSTRUCTOR | 4
+    SNMP_PDU_TRAP     = ASN_BER_BASE_CONTEXT | ASN_BER_BASE_CONSTRUCTOR | 4
 };
 
 typedef enum SNMP_TRAP_TYPES {
@@ -271,11 +258,10 @@ typedef struct SNMP_VALUE {
     byte i; // for encoding/decoding functions
     //
     // clear's buffer and sets size to 0
-    void clear(void) {
+    void clear() {
         memset(data, 0, SNMP_MAX_VALUE_LEN);
         size = 0;
     }
-    //
     //
     // ASN.1 decoding functions
     //
@@ -330,7 +316,7 @@ typedef struct SNMP_VALUE {
         if ( syntax == SNMP_SYNTAX_INT ) {
             uint8_t *p = (uint8_t*)value, i;
             memset(value, 0, sizeof(*value));
-            for(i = 0;i < size;i++)
+            for(i = 0; i < size; i++)
             {
                 *p++ = data[size - 1 - i];
             }
@@ -346,7 +332,7 @@ typedef struct SNMP_VALUE {
         if ( syntax == SNMP_SYNTAX_INT32 ) {
             uint8_t *p = (uint8_t*)value, i;
             memset(value, 0, sizeof(*value));
-            for(i = 0;i < size;i++)
+            for(i = 0; i < size; i++)
             {
                 *p++ = data[size - 1 - i];
             }
@@ -363,7 +349,7 @@ typedef struct SNMP_VALUE {
             || syntax == SNMP_SYNTAX_GAUGE || syntax == SNMP_SYNTAX_UINT32 ) {
             uint8_t *p = (uint8_t*)value, i;
             memset(value, 0, sizeof(*value));
-            for(i = 0;i < size;i++)
+            for(i = 0; i < size; i++)
             {
                 *p++ = data[size - 1 - i];
             }
@@ -380,7 +366,7 @@ typedef struct SNMP_VALUE {
         if ( syntax == SNMP_SYNTAX_IP_ADDRESS || syntax == SNMP_SYNTAX_NSAPADDR ) {
             uint8_t *p = (uint8_t*)value, i;
             memset(value, 0, 4);
-            for(i = 0;i < size;i++)
+            for(i = 0; i < size; i++)
             {
                 *p++ = data[size - 4 - i];
             }
@@ -401,7 +387,6 @@ typedef struct SNMP_VALUE {
             return SNMP_ERR_WRONG_TYPE;
         }
     }
-    //
     //
     // ASN.1 encoding functions
     //
@@ -572,7 +557,7 @@ public:
     // Agent functions
     SNMP_API_STAT_CODES begin();
     SNMP_API_STAT_CODES begin(char *getCommName, char *setCommName, uint16_t port);
-    void listen(void);
+    void listen();
 
     SNMP_API_STAT_CODES requestPdu(SNMP_PDU *pdu);
     SNMP_API_STAT_CODES responsePdu(SNMP_PDU *pdu);

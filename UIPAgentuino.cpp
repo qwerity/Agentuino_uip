@@ -20,10 +20,6 @@
 
 // Update by Khachik Shahzadyan <qwerity@gmail.com>
 
-//
-// sketch_aug23a
-//
-
 #include "UIPAgentuino.h"
 #include "UIPUdp.h"
 
@@ -73,7 +69,7 @@ AgentuinoClass::begin(char *getCommName, char *setCommName, uint16_t port = SNMP
 }
 
 void 
-AgentuinoClass::listen(void)
+AgentuinoClass::listen()
 {
     // if bytes are available in receive buffer
     // and pointer to a function (delegate function)
@@ -81,7 +77,6 @@ AgentuinoClass::listen(void)
     Udp.parsePacket();
     if ( Udp.available() && nullptr != _callback ) (*_callback)();
 }
-
 
 SNMP_API_STAT_CODES 
 AgentuinoClass::requestPdu(SNMP_PDU *pdu)
@@ -121,7 +116,7 @@ AgentuinoClass::requestPdu(SNMP_PDU *pdu)
     // get UDP packet
     //Udp.parsePacket();
     Udp.read(_packet, _packetSize);
-//     Udp.readPacket(_packet, _packetSize, _dstIp, &_dstPort);
+    // Udp.readPacket(_packet, _packetSize, _dstIp, &_dstPort);
     //
     // packet check 1
     if ( _packet[0] != 0x30 ) {
@@ -178,7 +173,6 @@ AgentuinoClass::requestPdu(SNMP_PDU *pdu)
         return SNMP_API_STAT_NAME_TOO_BIG;
     }
     //
-    //
     // validate community name
     if ( pdu->type == SNMP_PDU_SET && comLen == _setSize ) {
         //
@@ -217,7 +211,6 @@ AgentuinoClass::requestPdu(SNMP_PDU *pdu)
         return SNMP_API_STAT_NO_SUCH_NAME;
     }
     //
-    //
     // extract reqiest-id 0x00 0x00 0x00 0x01 (4-byte int aka int32)
     pdu->requestId = 0;
     for ( i = 0; i < ridLen; i++ ) {
@@ -237,7 +230,6 @@ AgentuinoClass::requestPdu(SNMP_PDU *pdu)
     for ( i = 0; i < eriLen; i++ ) {
         pdu->errorIndex = (pdu->errorIndex << 8) | _packet[errEnd + 3 + i];
     }
-    //
     //
     // validate object-identifier size
     if ( obiLen > SNMP_MAX_OID_LEN ) {
@@ -390,7 +382,6 @@ AgentuinoClass::onPduReceive(onPduReceiveCallback pduReceived)
 void 
 AgentuinoClass::freePdu(SNMP_PDU *pdu)
 {
-    //
     memset(pdu->OID.data, 0, SNMP_MAX_OID_LEN);
     memset(pdu->VALUE.data, 0, SNMP_MAX_VALUE_LEN);
     free((char *) pdu);
